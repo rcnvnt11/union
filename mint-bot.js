@@ -344,7 +344,8 @@ const SEA_ERRORS_IFACE = new ethers.utils.Interface([
 async function mintGenericDetected_single(wallet, detected) {
   const { func } = detected;
   const contract = new ethers.Contract(state.contract, [func.format()], wallet);
-  const valueWei = ethers.utils.parseEther(String(state.mintPrice || '0'));
+  const priceStr = String(state.mintPrice || '0').trim();
+const valueWei = ethers.utils.parseEther(priceStr);
   const args = [];
   if (func.inputs.length >= 1 && func.inputs[0].type.startsWith('uint')) {
     args.push(ethers.BigNumber.from(state.mintAmount));
@@ -378,7 +379,8 @@ async function mintGenericManual_single(wallet) {
   if (func.inputs.length >= 1 && func.inputs[0].type.startsWith('uint')) {
     args.push(ethers.BigNumber.from(state.mintAmount));
   }
-  const valueWei = ethers.utils.parseEther(String(state.mintPrice || '0'));
+  const priceStr = String(state.mintPrice || '0').trim();
+const valueWei = ethers.utils.parseEther(priceStr);
   if (DEBUG) console.log('[GENERIC/MANUAL] func=', func.name, 'args=', args, 'value=', state.mintPrice);
 
   // estimate + preflight
@@ -404,7 +406,8 @@ async function mintSeaDropPublic_single(wallet) {
   if (!state.nftContractAddr) state.nftContractAddr = state.contract;
   const abi = ['function mintPublic(address,address,address,uint256) payable'];
   const router = new ethers.Contract(state.seadroprouter, abi, wallet);
-  const value = ethers.utils.parseEther(String(state.mintPrice || '0'));
+  const priceStr = String(state.mintPrice || '0').trim();
+const value = ethers.utils.parseEther(priceStr);
 
   if (!state.seadroprouter || state.seadroprouter.toLowerCase() === state.nftContractAddr.toLowerCase()) {
     throw new Error('Router tidak valid atau sama dengan NFT contract.');
@@ -478,7 +481,8 @@ async function detectMintFunction(wallet) {
   const funcs = pickMintLikeFunctions(abi);
   if (funcs.length === 0) { spinner.fail('Tidak ada fungsi mint-like di ABI.'); return null; }
 
-  const valueWei = ethers.utils.parseEther(String(state.mintPrice || '0'));
+  const priceStr = String(state.mintPrice || '0').trim();
+const valueWei = ethers.utils.parseEther(priceStr);
   for (const f of funcs) {
     const args = [];
     if (f.inputs.length >= 1 && f.inputs[0].type.startsWith('uint')) {
@@ -666,7 +670,7 @@ async function setMintParams() {
     { name: 'price', message: 'Mint Price per NFT (native token):', default: state.mintPrice },
     { name: 'amount', message: 'Mint Amount:', default: String(state.mintAmount), validate: v => (+v>0) ? true : 'Harus > 0' }
   ]);
-  state.mintPrice = String(a.price);
+  state.mintPrice = String(a.price).trim();
   state.mintAmount = Number(a.amount);
 }
 
