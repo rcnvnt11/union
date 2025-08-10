@@ -1,0 +1,17 @@
+{
+  "name": "mint-bot",
+  "version": "3.1.0",
+  "type": "module",
+  "main": "mint-bot.js",
+  "scripts": {
+    "start": "node mint-bot.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.3",
+    "chalk": "^5.3.0",
+    "dotenv": "^16.4.5",
+    "ethers": "^5.7.2",
+    "inquirer": "^9.2.20",
+    "ora": "^8.0.1"
+  }
+}
